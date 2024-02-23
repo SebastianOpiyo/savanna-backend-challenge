@@ -9,6 +9,11 @@ from rest_framework.authtoken import views as auth_views
 router = routers.DefaultRouter()
 
 urlpatterns = router.urls
+# router.register(r'users', views.UserViewSet)
+# router.register(r'groups', views.GroupViewSet)
+# router.register(r'customers', views.CustomerViewSet)
+# router.register(r'orders', views.OrderViewSet)
+# router.register(r'sms', views.SmsViewSet)
 
 urlpatterns += [
     path('admin/', admin.site.urls),

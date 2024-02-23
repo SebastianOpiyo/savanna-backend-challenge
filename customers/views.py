@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from rest_framework import generics
+from rest_framework import generics, viewsets, permissions
 from .models import Customer
 from .serializers import CustomerSerializer
+
 
 class CustomerListCreateAPIView(generics.ListCreateAPIView):
     queryset = Customer.objects.all()
@@ -10,3 +11,6 @@ class CustomerListCreateAPIView(generics.ListCreateAPIView):
 class CustomerRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
+
+
+    
