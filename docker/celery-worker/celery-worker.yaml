@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: savannah-celery-worker-deployment
+  namespace: default
+  labels:
+    app: savannah-celery-worker
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: savannah-celery-worker
+  template:
+    metadata:
+      labels:
+        app: savannah-celery-worker
+    spec:
+      terminationGracePeriodSeconds: 3800
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
+      containers:
+        - name: savannah-celery-worker-image
+          image: ghcr.io/john-doherty01/savannah-celery-worker:VERSION
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100M"
+            limits:
+              cpu: "150m"
+              memory: "200M"
+          ports:
+            - containerPort: 5555
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5555
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5555
+            initialDelaySeconds: 15
+            periodSeconds: 120
+          env:
+            - name: DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: savannahsecret
+                  key: database_name
+                  optional: false
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: savannahsecret
+                  key: database_user
+                  optional: false
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: savannahsecret
+                  key: database_password
+                  optional: false
+            - name: DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: savannahsecret
+                  key: database_host
+                  optional: false
+            - name: DATABASE_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: savannahsecret
+                  key: database_port
+                  optional: false
+            - name: ALLOWED_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: savannahsecret
+                  key: allowed_host
+                  optional: false
+            - name: CORS_ALLOWED_ORIGINS
+              valueFrom:
+                secretKeyRef:
+                  name: savannahsecret
+                  key: cors_allowed_origins
+                  optional: false
+            - name: CELERY_BROKER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: savannahsecret
+                  key: celery_broker_url
+                  optional: false
+            - name: CELERY_RESULT_URL
+              valueFrom:
+                secretKeyRef:
+                  name: savannahsecret
+                  key: celery_result_url
+                  optional: false
+            - name: CHANNELS_URLS
+              valueFrom:
+                secretKeyRef:
+                  name: savannahsecret
+                  key: channels_url
+                  optional: false
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: savannah-celery-worker-load-balancer
+spec:
+  selector:
+    app: savannah-celery-worker
+  ports:
+    - port: 80
+      name: http
+      targetPort: 5555
+    - port: 443
+      name: https
+      targetPort: 5555
+  type: LoadBalancer
