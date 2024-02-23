@@ -28,10 +28,10 @@ INSTALLED_APPS = [
     'rest_framework_json_api',
     'django_filters',
     'django_extensions',
+    'oauth2_provider',
     'core',
     'customers',
     'orders',
-    'authentication',
     'sms',
     'tests',
     'deployment',
@@ -45,6 +45,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'savanna.urls'
@@ -66,6 +67,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'savanna.wsgi.application'
+
+# CORS settings
+CORS_ORIGIN_ALLOW_ALL = True
+
+# Oauth2 settings
+OAUTH2_PROVIDER = {
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'},
+}
 
 
 # Database
