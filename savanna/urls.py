@@ -16,4 +16,5 @@ urlpatterns += [
     path('api-token-auth/', auth_views.obtain_auth_token),
     path('api/', include('customers.urls')),
     path('api/', include('orders.urls')),
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
