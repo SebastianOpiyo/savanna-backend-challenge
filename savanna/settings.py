@@ -31,10 +31,7 @@ INSTALLED_APPS = [
     'core',
     'customers',
     'orders',
-    'authentication',
     'sms',
-    'tests',
-    'deployment',
 ]
 
 MIDDLEWARE = [
