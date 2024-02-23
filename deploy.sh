@@ -2,23 +2,19 @@
 set -e
 
 ENV_TYPE=prod
-BUILD_TAG=hitman-$ENV_TYPE-$BUILD_NUMBER
-REGISTRY=ghcr.io/john-doherty01
+BUILD_TAG=savannah-$ENV_TYPE-$BUILD_NUMBER
+REGISTRY=ghcr.io/SebastianOpiyo
 
 echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
 
-docker build -f ./docker/webapp/Dockerfile . -t hitman/webapp --build-arg REACT_ENV_PROD="$REACT_ENV_PROD"
-docker tag hitman/webapp $REGISTRY/hitman-webapp:$BUILD_TAG
-docker push $REGISTRY/hitman-webapp:$BUILD_TAG
+docker build -f ./docker/docker_files/Dockerfile . -t savannah/django-rest-api
+docker tag savannah/django-rest-api $REGISTRY/django-rest-api:$BUILD_TAG
+docker push $REGISTRY/django-rest-api:$BUILD_TAG
 
-docker build -f ./docker/rest-api/Dockerfile . -t hitman/rest-api
-docker tag hitman/rest-api $REGISTRY/hitman-rest-api:$BUILD_TAG
-docker push $REGISTRY/hitman-rest-api:$BUILD_TAG
+docker build -f ./docker/celery-worker/Dockerfile . -t savannah/celery-worker
+docker tag savannah/celery-worker $REGISTRY/savannah-celery-worker:$BUILD_TAG
+docker push $REGISTRY/savannah-celery-worker:$BUILD_TAG
 
-docker build -f ./docker/celery-worker/Dockerfile . -t hitman/celery-worker
-docker tag hitman/celery-worker $REGISTRY/hitman-celery-worker:$BUILD_TAG
-docker push $REGISTRY/hitman-celery-worker:$BUILD_TAG
-
-docker build -f ./docker/celery-flower/Dockerfile . -t hitman/celery-flower
-docker tag hitman/celery-flower $REGISTRY/hitman-celery-flower:$BUILD_TAG
-docker push $REGISTRY/hitman-celery-flower:$BUILD_TAG
+docker build -f ./docker/celery-flower/Dockerfile . -t savannah/celery-flower
+docker tag savannah/celery-flower $REGISTRY/savannah-celery-flower:$BUILD_TAG
+docker push $REGISTRY/savannah-celery-flower:$BUILD_TAG
